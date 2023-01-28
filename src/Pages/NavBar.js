@@ -79,9 +79,9 @@ function NavBar() {
                 Connect Wallet
             </button>}
             {defaultAccount ?
-                <p className="text-white md:text-xs hidden ml-4 ">Address: {defaultAccount}</p> : null}
+                <p className=" text-ellipsis overflow-hidden whitespace-nowrap  text-white  text-[1px] ml-8 w-20  ] ">Add: {defaultAccount}</p> : null}
             {defaultAccount ?
-                <p className="text-white md:text-xs text-[1px] ml-2 ">balance: {userBalance}eth</p> : null}
+                <p className="text-white md:text-xs text-[1px] ml-2 "> Balance: {userBalance}eth</p> : null}
 
             <div className={"sm:hidden flex flex-1 justify-end items-center"}> {/*手机端显示menu和close图标*/}
                 <img src={toggle ? close : menu} alt="menu" className={"w-[28px] h-[28px] object-contain"}
