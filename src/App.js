@@ -3,6 +3,7 @@ import styles from "./style";
 import Main from "./Pages/Main";
 import Footer from "./Pages/footer";
 
+
 function App() {
     return (
         <div className={"bg-primary w-full overflow-hidden"}>
