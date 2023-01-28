@@ -62,7 +62,7 @@ function NavBar() {
 
     return (
         <nav className={'w-full flex items-center justify-between py-6  navbar '}>
-            <img className={'w-[124px] h-[32px]'} src={logo} alt="logo"/>
+            <img className={'md:w-[200px] w-[100px]  md:h-[40px] h-[20px]'} src={logo} alt="logo"/>
             {/*pc navbar*/}
             <ul className={'list-none sm:flex hidden justify-end items-center flex-1 text-red'}>
                 {navLinks.map((nav, index) => (
