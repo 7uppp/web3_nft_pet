@@ -11,12 +11,14 @@ function NavBar() {
     const [userBalance, setUserBalance] = useState(null);
     let Connected = false;
 
-    //wallet connect
 
-    const connectWalletHandler = async () => {
+
+    //wallet connect handler
+
+    const connectWalletHandler = () => {
         if (window.ethereum && window.ethereum.isMetaMask) {
 
-            await window.ethereum.request({method: 'eth_requestAccounts'})
+            window.ethereum.request({method: 'eth_requestAccounts'})
                 .then(result => {
                     accountChangedHandler(result[0]);
                     Connected = true;
@@ -63,6 +65,7 @@ function NavBar() {
 
     };
 
+    //chain changed handler
     const chainChangedHandler = () => {
         // reload the page
         window.location.reload();
