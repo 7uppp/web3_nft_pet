@@ -9,7 +9,7 @@ function NavBar() {
     const [toggle, setToggle] = useState(false);
     const [defaultAccount, setDefaultAccount] = useState(null);
     const [userBalance, setUserBalance] = useState(null);
-    const [isConnected, setIsConnected] = useState(false);
+    let Connected = false;
 
     //wallet connect
 
@@ -19,7 +19,7 @@ function NavBar() {
             await window.ethereum.request({method: 'eth_requestAccounts'})
                 .then(result => {
                     accountChangedHandler(result[0]);
-                    setIsConnected(true);
+                    Connected = true;
                 })
                 .catch(error => {
                     console.log(error.message);
@@ -34,18 +34,20 @@ function NavBar() {
 
     //set the default account
     const accountChangedHandler = (newAccount) => {
-        if(isConnected){
-            setDefaultAccount(newAccount);
-            getAccountBalance(newAccount.toString())
-    }
-        else{
-            setDefaultAccount(null)
-            setUserBalance(null);
-            setIsConnected(false);
 
-
-        }
-
+            if(newAccount.length === 0 ){
+                Connected=false;
+                setUserBalance(null);
+                console.log('No account connected');
+            }
+            if (Connected = true) {
+                setDefaultAccount(newAccount);
+                getAccountBalance(newAccount.toString())
+            } else {
+                Connected = false;
+                setDefaultAccount(null)
+                setUserBalance(null);
+            }
 
     }
 
@@ -64,6 +66,7 @@ function NavBar() {
     const chainChangedHandler = () => {
         // reload the page
         window.location.reload();
+        console.log("chain changed");
     }
 
     window.ethereum.on('accountsChanged', accountChangedHandler);
@@ -91,8 +94,8 @@ function NavBar() {
             </button>}
             {defaultAccount ?
                 <p className=" text-ellipsis overflow-hidden whitespace-nowrap  text-white  text-[1px] ml-8 w-20  ] "> {defaultAccount}</p> : null}
-            {defaultAccount ?
-                <p className="text-white md:text-xs text-[1px] ml-2 "> {userBalance} eth</p> : null}
+            {defaultAccount?
+                <p className="text-white md:text-xs text-[1px] ml-2 ">  Balance: {userBalance}</p> : null}
 
             <div className={"sm:hidden flex flex-1 justify-end items-center"}> {/*手机端显示menu和close图标*/}
                 <img src={toggle ? close : menu} alt="menu" className={"w-[28px] h-[28px] object-contain"}
