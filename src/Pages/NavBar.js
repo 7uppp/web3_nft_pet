@@ -3,15 +3,22 @@ import {navLinks} from "../constants";
 import {close, logo, menu} from '../assets';
 import {ethers} from "ethers";
 import GetGas from "../api/getGas.js";
+import getNFTsForOwner from "../api/getNFTsForOwner";
+import {useDispatch, useSelector} from "react-redux";
+import {setState} from "../store/setConnectState"
+import {setDefaultAccount} from "../store/setDefaultAccount";
+
 
 
 function NavBar() {
 
     const [toggle, setToggle] = useState(false);
-    const [defaultAccount, setDefaultAccount] = useState(null);
     const [userBalance, setUserBalance] = useState(null);
     const [gasPrice, setGasPrice] = useState(null);
-    let Connected = false;
+    const dispatch = useDispatch();
+
+    const defaultAccount = useSelector(state => state.setDefaultAccount.defaultAccount);
+
 
 
     useEffect(() => {
@@ -39,8 +46,9 @@ function NavBar() {
 
             window.ethereum.request({method: 'eth_requestAccounts'})
                 .then(result => {
+                    dispatch(setDefaultAccount(result[0]));
                     accountChangedHandler(result[0]);
-                    Connected = true;
+                    dispatch(setState(true));
                 })
                 .catch(error => {
                     console.log(error.message);
@@ -53,20 +61,22 @@ function NavBar() {
         }
     }
 
-    // set the default account
-    const accountChangedHandler = (newAccount) => {
+    // set the default account, the parameter is the default account address, which from the result[0] value in the connectWalletHandler method
+    const accountChangedHandler = (defaultAccount) => {
 
-        if (newAccount.length === 0) {
-            Connected = false;
+        if (defaultAccount.length === 0) {
+            dispatch(setState(false));
             setUserBalance(null);
             console.log('No account connected');
+
         }
-        if (Connected = true) {
-            setDefaultAccount(newAccount);
-            getAccountBalance(newAccount.toString())
+        if (true) {
+            dispatch(setDefaultAccount(defaultAccount));
+            getAccountBalance(defaultAccount.toString())
+            getNFTsForOwner(defaultAccount.toString())
         } else {
-            Connected = false;
-            setDefaultAccount(null)
+            dispatch(setState(false));
+            dispatch(setDefaultAccount(null));
             setUserBalance(null);
         }
 
@@ -84,6 +94,8 @@ function NavBar() {
 
     };
 
+
+    const ChainID = window.ethereum.chainId;
     //chain changed handler
     const chainChangedHandler = (ChainID) => {
 
@@ -110,11 +122,13 @@ function NavBar() {
     }, []);
 
 
-    const ChainID = window.ethereum.chainId;
-
-
+    useEffect(() => {
     window.ethereum.on('accountsChanged', accountChangedHandler);//listen for account changes
+        return () => {
+            window.ethereum.removeListener('accountsChanged', accountChangedHandler);
+        }
 
+    }, []);
 
     return (
         <nav className={'w-full flex items-center justify-between py-6  navbar '}>
