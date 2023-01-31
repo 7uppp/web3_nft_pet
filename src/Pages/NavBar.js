@@ -85,15 +85,35 @@ function NavBar() {
     };
 
     //chain changed handler
-    const chainChangedHandler = () => {
-        // reload the page
-        window.location.reload();
-        console.log("chain changed");
+    const chainChangedHandler = (ChainID) => {
+
+        if (ChainID === '0x1') {
+            connectWalletHandler();
+            accountChangedHandler(defaultAccount)
+            const balance = getAccountBalance(defaultAccount);
+            setUserBalance(balance)
+            console.log('Connected to Mainnet');
+
+        } else {
+            setUserBalance(null);
+            alert("chain changed,please connect ETH mainnet");
+        }
+
     }
+
+    useEffect(() => {
+        window.ethereum.on("chainChanged", chainChangedHandler);
+
+        return () => {
+            window.ethereum.removeListener("chainChanged", chainChangedHandler);
+        };
+    }, []);
+
+
+    const ChainID = window.ethereum.chainId;
 
 
     window.ethereum.on('accountsChanged', accountChangedHandler);//listen for account changes
-    window.ethereum.on('chainChanged', chainChangedHandler);//listen for chain changes
 
 
     return (
@@ -117,7 +137,7 @@ function NavBar() {
             </button>}
             {defaultAccount ?
                 <p className=" text-ellipsis overflow-hidden whitespace-nowrap  text-white  text-[1px] ml-4 w-20  ] "> {defaultAccount}</p> : null}
-            {defaultAccount ?
+            {defaultAccount && ChainID === "0x1" ?
                 <p className="text-white md:text-xs text-[1px] ml-2 "> Balance: {userBalance}</p> : null}
 
             <div className={"sm:hidden flex flex-1 justify-end items-center"}> {/*手机端显示menu和close图标*/}
