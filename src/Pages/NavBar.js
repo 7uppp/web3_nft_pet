@@ -7,17 +7,18 @@ import getNFTsForOwner from "../api/getNFTsForOwner";
 import {useDispatch, useSelector} from "react-redux";
 import {setState} from "../store/setConnectState"
 import {setDefaultAccount} from "../store/setDefaultAccount";
-
+import {setBalance} from "../store/setBalance";
+import {setGasPrice} from "../store/setGasSlice";
 
 
 function NavBar() {
 
     const [toggle, setToggle] = useState(false);
-    const [userBalance, setUserBalance] = useState(null);
-    const [gasPrice, setGasPrice] = useState(null);
     const dispatch = useDispatch();
 
     const defaultAccount = useSelector(state => state.setDefaultAccount.defaultAccount);
+    const balance = useSelector(state => state.setBalance.balance);
+    const gasPrice = useSelector(state => state.setGasPrice.gas);
 
 
 
@@ -26,8 +27,8 @@ function NavBar() {
         window.setInterval(() => {
             try {
                 const getGas = async () => {
-                    const gas = await GetGas();
-                    setGasPrice(gas);
+                    const gasPrice = await GetGas();
+                    dispatch(setGasPrice(gasPrice));
                 }
                 getGas();
             } catch (e) {
@@ -35,7 +36,7 @@ function NavBar() {
             }
 
 
-        }, 50000);
+        }, 3000);
     }, []);
 
 
@@ -66,7 +67,7 @@ function NavBar() {
 
         if (defaultAccount.length === 0) {
             dispatch(setState(false));
-            setUserBalance(null);
+            dispatch(setBalance(null));
             console.log('No account connected');
 
         }
@@ -77,7 +78,7 @@ function NavBar() {
         } else {
             dispatch(setState(false));
             dispatch(setDefaultAccount(null));
-            setUserBalance(null);
+            dispatch(setBalance(null));
         }
 
     }
@@ -86,7 +87,7 @@ function NavBar() {
     const getAccountBalance = (account) => {
         window.ethereum.request({method: 'eth_getBalance', params: [account, 'latest']})
             .then(balance => {
-                setUserBalance(parseFloat(ethers.utils.formatEther(balance)).toFixed(4));
+                dispatch(setBalance(parseFloat(ethers.utils.formatEther(balance)).toFixed(4)));
             })
             .catch(error => {
                 console.log(error.message);
@@ -103,11 +104,11 @@ function NavBar() {
             connectWalletHandler();
             accountChangedHandler(defaultAccount)
             const balance = getAccountBalance(defaultAccount);
-            setUserBalance(balance)
+            dispatch(setBalance(balance));
             console.log('Connected to Mainnet');
 
         } else {
-            setUserBalance(null);
+            dispatch(setBalance(null));
             alert("chain changed,please connect ETH mainnet");
         }
 
@@ -144,7 +145,7 @@ function NavBar() {
                     </li>
                 ))}
             </ul>
-            <span className="text-white md:text-[1px]  text-sm ml-6">Gas: {parseFloat(gasPrice).toFixed(1)} </span>
+            <span className="text-white md:text-[1px]  text-sm ml-6">Gas:{parseFloat(`${gasPrice}`).toFixed(1)} </span>
             {defaultAccount ? null : <button onClick={connectWalletHandler}
                                              className={"text-white text-sm ml-8 rounded-md border-solid border-2 border-white px-2 sm:flex hidden "}>
                 Connect Wallet
@@ -152,7 +153,7 @@ function NavBar() {
             {defaultAccount ?
                 <p className=" text-ellipsis overflow-hidden whitespace-nowrap  text-white  text-[1px] ml-4 w-20  ] "> {defaultAccount}</p> : null}
             {defaultAccount && ChainID === "0x1" ?
-                <p className="text-white md:text-xs text-[1px] ml-2 "> Balance: {userBalance}</p> : null}
+                <p className="text-white md:text-xs text-[1px] ml-2 "> Balance: {balance}</p> : null}
 
             <div className={"sm:hidden flex flex-1 justify-end items-center"}> {/*手机端显示menu和close图标*/}
                 <img src={toggle ? close : menu} alt="menu" className={"w-[28px] h-[28px] object-contain"}
