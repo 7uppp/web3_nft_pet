@@ -36,7 +36,7 @@ function NavBar() {
             }
 
 
-        }, 3000);
+        }, 300000);
     }, []);
 
 
@@ -63,7 +63,7 @@ function NavBar() {
     }
 
     // set the default account, the parameter is the default account address, which from the result[0] value in the connectWalletHandler method
-    const accountChangedHandler = (defaultAccount) => {
+    const accountChangedHandler = async (defaultAccount) => {
 
         if (defaultAccount.length === 0) {
             dispatch(setState(false));
@@ -74,7 +74,7 @@ function NavBar() {
         if (true) {
             dispatch(setDefaultAccount(defaultAccount));
             getAccountBalance(defaultAccount.toString())
-            getNFTsForOwner(defaultAccount.toString())
+           await getNFTsForOwner(defaultAccount.toString());
         } else {
             dispatch(setState(false));
             dispatch(setDefaultAccount(null));
@@ -124,7 +124,7 @@ function NavBar() {
 
 
     useEffect(() => {
-    window.ethereum.on('accountsChanged', accountChangedHandler);//listen for account changes
+        window.ethereum.on('accountsChanged', accountChangedHandler);//listen for account changes
         return () => {
             window.ethereum.removeListener('accountsChanged', accountChangedHandler);
         }

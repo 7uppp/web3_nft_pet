@@ -2,6 +2,9 @@ import NavBar from "./Pages/NavBar";
 import styles from "./style";
 import Main from "./Pages/Main";
 import Footer from "./Pages/footer";
+import NFT from "./Pages/NFT";
+
+
 
 
 
@@ -15,6 +18,7 @@ function App() {
                     <NavBar/>
                     <Main/>
                     <Footer/>
+                    <NFT/>
                 </div>
             </div>
         </div>
