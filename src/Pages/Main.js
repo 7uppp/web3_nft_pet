@@ -1,11 +1,14 @@
 import React from 'react';
 import {main_cover} from "../assets";
-import Typewriter from "./typewriter";
+import Typewriter from "../components/typewriter";
+import NavBar from "../components/NavBar";
+import Footer from "../components/Footer";
 
 
 function Main(props) {
     return (
         <div>
+            <NavBar/>
             <div className="flex w-full items-center justify-center">
                 <div className="flex flex-col items-center justify-center ">
                     <img src={main_cover} alt="main_cover" className="mt-32 "/>
@@ -30,6 +33,7 @@ function Main(props) {
                     to Editor
                 </button>
             </div>
+            <Footer/>
         </div>
 
     );

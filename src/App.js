@@ -1,24 +1,30 @@
-import NavBar from "./Pages/NavBar";
+
 import styles from "./style";
 import Main from "./Pages/Main";
-import Footer from "./Pages/footer";
-import NFT from "./Pages/NFT";
+import NFT from "./Pages/NftCollectionPage";
+import {createBrowserRouter, RouterProvider} from "react-router-dom";
 
 
-
-
-
+const router = createBrowserRouter([
+    {
+        path: "/",
+        element: <Main/>,
+    },
+    {
+        path: "/nft",
+        element: <NFT/>,
+    },
+]);
 
 
 function App() {
+
+
     return (
         <div className={"bg-primary w-full overflow-hidden"}>
             <div className={`${styles.paddingX} ${styles.flexCenter}`}>
                 <div className={`${styles.boxWidth}`}>
-                    <NavBar/>
-                    <Main/>
-                    <Footer/>
-                    <NFT/>
+                    <RouterProvider router={router}/>
                 </div>
             </div>
         </div>

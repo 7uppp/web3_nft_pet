@@ -3,7 +3,6 @@ import {navLinks} from "../constants";
 import {close, logo, menu} from '../assets';
 import {ethers} from "ethers";
 import GetGas from "../api/getGas.js";
-import getNFTsForOwner from "../api/getNFTsForOwner";
 import {useDispatch, useSelector} from "react-redux";
 import {setState} from "../store/setConnectState"
 import {setDefaultAccount} from "../store/setDefaultAccount";
@@ -36,7 +35,7 @@ function NavBar() {
             }
 
 
-        }, 300000);
+        }, 3000000);
     }, []);
 
 
@@ -63,7 +62,7 @@ function NavBar() {
     }
 
     // set the default account, the parameter is the default account address, which from the result[0] value in the connectWalletHandler method
-    const accountChangedHandler = async (defaultAccount) => {
+    const accountChangedHandler = (defaultAccount) => {
 
         if (defaultAccount.length === 0) {
             dispatch(setState(false));
@@ -74,11 +73,6 @@ function NavBar() {
         if (true) {
             dispatch(setDefaultAccount(defaultAccount));
             getAccountBalance(defaultAccount.toString())
-           await getNFTsForOwner(defaultAccount.toString());
-        } else {
-            dispatch(setState(false));
-            dispatch(setDefaultAccount(null));
-            dispatch(setBalance(null));
         }
 
     }
@@ -133,13 +127,16 @@ function NavBar() {
 
     return (
         <nav className={'w-full flex items-center justify-between py-6  navbar '}>
-            <img className={'md:w-[200px] w-[100px]  md:h-[40px] h-[20px]'} src={logo} alt="logo"/>
+            <a href="/">
+                <img className={'md:w-[200px] w-[100px]  md:h-[40px] h-[20px]'} src={logo} alt="logo"/>
+            </a>
+
             {/*pc navbar*/}
             <ul className={'list-none sm:flex hidden justify-end items-center flex-1 text-red'}>
                 {navLinks.map((nav, index) => (
                     <li key={nav.id}
                         className={`font-poppins font-normal cursor-pointer text-[16px] text-white ${index === navLinks.length - 1 ? 'mr-0' : 'mr-10'}`}>
-                        <a href={`#${nav.id}`}>
+                        <a href={`${nav.id}`}>
                             {nav.title}
                         </a>
                     </li>
