@@ -1,23 +1,23 @@
-import React, {useEffect, useState} from 'react';
-import {navLinks} from "../constants";
-import {close, logo, menu} from '../assets';
-import {ethers} from "ethers";
-import GetGas from "../api/getGas.js";
-import {useDispatch, useSelector} from "react-redux";
-import {setState} from "../store/setConnectState"
-import {setDefaultAccount} from "../store/setDefaultAccount";
-import {setBalance} from "../store/setBalance";
-import {setGasPrice} from "../store/setGasSlice";
+import React, { useEffect, useState } from 'react'
+import { navLinks } from "../constants"
+import { close, logo, menu } from '../assets'
+import { ethers } from "ethers"
+import GetGas from "../api/getGas.js"
+import { useDispatch, useSelector } from "react-redux"
+import { setState } from "../store/setConnectState"
+import { setDefaultAccount } from "../store/setDefaultAccount"
+import { setBalance } from "../store/setBalance"
+import { setGasPrice } from "../store/setGasSlice"
 
 
-function NavBar() {
+function NavBar () {
 
-    const [toggle, setToggle] = useState(false);
-    const dispatch = useDispatch();
+    const [toggle, setToggle] = useState(false)
+    const dispatch = useDispatch()
 
-    const defaultAccount = useSelector(state => state.setDefaultAccount.defaultAccount);
-    const balance = useSelector(state => state.setBalance.balance);
-    const gasPrice = useSelector(state => state.setGasPrice.gas);
+    const defaultAccount = useSelector(state => state.setDefaultAccount.defaultAccount)
+    const balance = useSelector(state => state.setBalance.balance)
+    const gasPrice = useSelector(state => state.setGasPrice.gas)
 
 
 
@@ -26,17 +26,17 @@ function NavBar() {
         window.setInterval(() => {
             try {
                 const getGas = async () => {
-                    const gasPrice = await GetGas();
-                    dispatch(setGasPrice(gasPrice));
+                    const gasPrice = await GetGas()
+                    dispatch(setGasPrice(gasPrice))
                 }
-                getGas();
+                getGas()
             } catch (e) {
                 console.log(e)
             }
 
 
-        }, 3000000);
-    }, []);
+        }, 3000000)
+    }, [])
 
 
     //wallet connect handler
@@ -44,19 +44,19 @@ function NavBar() {
     const connectWalletHandler = () => {
         if (window.ethereum && window.ethereum.isMetaMask) {
 
-            window.ethereum.request({method: 'eth_requestAccounts'})
+            window.ethereum.request({ method: 'eth_requestAccounts' })
                 .then(result => {
-                    dispatch(setDefaultAccount(result[0]));
-                    accountChangedHandler(result[0]);
-                    dispatch(setState(true));
+                    dispatch(setDefaultAccount(result[0]))
+                    accountChangedHandler(result[0])
+                    dispatch(setState(true))
                 })
                 .catch(error => {
-                    console.log(error.message);
+                    console.log(error.message)
 
-                });
+                })
 
         } else {
-            window.alert('Need to install MetaMask');
+            window.alert('Need to install MetaMask')
 
         }
     }
@@ -65,13 +65,13 @@ function NavBar() {
     const accountChangedHandler = (defaultAccount) => {
 
         if (defaultAccount.length === 0) {
-            dispatch(setState(false));
-            dispatch(setBalance(null));
-            console.log('No account connected');
+            dispatch(setState(false))
+            dispatch(setBalance(null))
+            console.log('No account connected')
 
         }
         if (true) {
-            dispatch(setDefaultAccount(defaultAccount));
+            dispatch(setDefaultAccount(defaultAccount))
             getAccountBalance(defaultAccount.toString())
         }
 
@@ -79,56 +79,56 @@ function NavBar() {
 
     //get wallet balance
     const getAccountBalance = (account) => {
-        window.ethereum.request({method: 'eth_getBalance', params: [account, 'latest']})
+        window.ethereum.request({ method: 'eth_getBalance', params: [account, 'latest'] })
             .then(balance => {
-                dispatch(setBalance(parseFloat(ethers.utils.formatEther(balance)).toFixed(4)));
+                dispatch(setBalance(parseFloat(ethers.utils.formatEther(balance)).toFixed(4)))
             })
             .catch(error => {
-                console.log(error.message);
-            });
+                console.log(error.message)
+            })
 
-    };
+    }
 
 
-    const ChainID = window.ethereum.chainId;
+    const ChainID = window.ethereum.chainId
     //chain changed handler
     const chainChangedHandler = (ChainID) => {
 
         if (ChainID === '0x1') {
-            connectWalletHandler();
+            connectWalletHandler()
             accountChangedHandler(defaultAccount)
-            const balance = getAccountBalance(defaultAccount);
-            dispatch(setBalance(balance));
-            console.log('Connected to Mainnet');
+            const balance = getAccountBalance(defaultAccount)
+            dispatch(setBalance(balance))
+            console.log('Connected to Mainnet')
 
         } else {
-            dispatch(setBalance(null));
-            alert("chain changed,please connect ETH mainnet");
+            dispatch(setBalance(null))
+            alert("chain changed,please connect ETH mainnet")
         }
 
     }
 
     useEffect(() => {
-        window.ethereum.on("chainChanged", chainChangedHandler);
+        window.ethereum.on("chainChanged", chainChangedHandler)
 
         return () => {
-            window.ethereum.removeListener("chainChanged", chainChangedHandler);
-        };
-    }, []);
+            window.ethereum.removeListener("chainChanged", chainChangedHandler)
+        }
+    }, [])
 
 
     useEffect(() => {
-        window.ethereum.on('accountsChanged', accountChangedHandler);//listen for account changes
+        window.ethereum.on('accountsChanged', accountChangedHandler)//listen for account changes
         return () => {
-            window.ethereum.removeListener('accountsChanged', accountChangedHandler);
+            window.ethereum.removeListener('accountsChanged', accountChangedHandler)
         }
 
-    }, []);
+    }, [])
 
     return (
         <nav className={'w-full flex items-center justify-between py-6  navbar '}>
             <a href="/">
-                <img className={'md:w-[200px] w-[100px]  md:h-[40px] h-[20px]'} src={logo} alt="logo"/>
+                <img className={'md:w-[200px] w-[100px]  md:h-[40px] h-[20px]'} src={logo} alt="logo" />
             </a>
 
             {/*pc navbar*/}
@@ -144,7 +144,7 @@ function NavBar() {
             </ul>
             <span className="text-white md:text-[1px]  text-sm ml-6">Gas:{parseFloat(`${gasPrice}`).toFixed(1)} </span>
             {defaultAccount ? null : <button onClick={connectWalletHandler}
-                                             className={"text-white text-sm ml-8 rounded-md border-solid border-2 border-white px-2 sm:flex hidden "}>
+                className={"text-white text-sm ml-8 rounded-md border-solid border-2 border-white px-2 sm:flex hidden "}>
                 Connect Wallet
             </button>}
             {defaultAccount ?
@@ -154,7 +154,7 @@ function NavBar() {
 
             <div className={"sm:hidden flex flex-1 justify-end items-center"}> {/*手机端显示menu和close图标*/}
                 <img src={toggle ? close : menu} alt="menu" className={"w-[28px] h-[28px] object-contain"}
-                     onClick={() => setToggle((prev) => !prev)}/>
+                    onClick={() => setToggle((prev) => !prev)} />
             </div>
 
 
@@ -172,13 +172,13 @@ function NavBar() {
                     ))}
                 </ul>
                 {defaultAccount ? null : <button onClick={connectWalletHandler}
-                                                 className={`${toggle ? 'flex' : 'hidden'} text-white text-sm rounded-md border-solid border-2 mt-2 border-white md:hidden`}>
+                    className={`${toggle ? 'flex' : 'hidden'} text-white text-sm rounded-md border-solid border-2 mt-2 border-white md:hidden`}>
                     Connect Wallet</button>}
 
             </div>
 
         </nav>
-    );
+    )
 }
 
-export default NavBar;
+export default NavBar
