@@ -20,9 +20,4 @@
 .env
 
 /src/api/node_modules
-.idea/web3_nft_pet.iml
-.idea/vcs.xml
-
-.idea/inspectionProfiles/Project_Default.xml
-.idea/modules.xml
-.idea/.gitignore
+/.idea
