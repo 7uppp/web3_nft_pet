@@ -18,8 +18,6 @@ function NftCollection () {
     const [nfts, setNfts] = useState([])
     const dispatch = useDispatch()
 
-
-
     //reload wallet address automatically and display nft
     useEffect(() => {
         window.setInterval(() => {

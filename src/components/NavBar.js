@@ -14,7 +14,6 @@ function NavBar () {
 
     const [toggle, setToggle] = useState(false)
     const dispatch = useDispatch()
-
     const defaultAccount = useSelector(state => state.setDefaultAccount.defaultAccount)
     const balance = useSelector(state => state.setBalance.balance)
     const gasPrice = useSelector(state => state.setGasPrice.gas)
@@ -35,7 +34,7 @@ function NavBar () {
             }
 
 
-        }, 3000000)
+        }, 300000)
     }, [])
 
 
@@ -88,9 +87,14 @@ function NavBar () {
             })
 
     }
+    if (window.ethereum) {
+        const ChainID = window.ethereum.chainId
+    }
+    else {
+        alert("please install metamask")
+    }
 
 
-    const ChainID = window.ethereum.chainId
     //chain changed handler
     const chainChangedHandler = (ChainID) => {
 
@@ -149,7 +153,7 @@ function NavBar () {
             </button>}
             {defaultAccount ?
                 <p className=" text-ellipsis overflow-hidden whitespace-nowrap  text-white  text-[1px] ml-4 w-20  ] "> {defaultAccount}</p> : null}
-            {defaultAccount && ChainID === "0x1" ?
+            {defaultAccount && window.ethereum.chainId === "0x1" ?
                 <p className="text-white md:text-xs text-[1px] ml-2 "> Balance: {balance}</p> : null}
 
             <div className={"sm:hidden flex flex-1 justify-end items-center"}> {/*手机端显示menu和close图标*/}
